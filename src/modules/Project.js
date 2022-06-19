@@ -1,6 +1,7 @@
-class TaskList {
-  constructor() {
+class Project {
+  constructor(name) {
     this.tasks = [];
+    this.name = name;
   }
 
   addTask(task) {
@@ -11,15 +12,9 @@ class TaskList {
     this.tasks.splice(this.tasks.indexOf(task), 1);
   }
 
-  getTask(index) {
-    return this.tasks[index];
-  }
-
-  getTasks() {
+  get tasks() {
     return this.tasks;
   }
-
-  getTaskCount() {
-    return this.tasks.length;
-  }
 }
+
+export default Project;
