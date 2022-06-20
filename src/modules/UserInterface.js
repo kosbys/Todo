@@ -1,5 +1,5 @@
-class UserInterface {
-  constructor() {}
+function userInterface() {
+  return {};
 }
 
-export default UserInterface;
+export default userInterface;
