@@ -1,19 +1,31 @@
 :root {
-  --blue: #14213d;
-  --light-blue: #0077b6;
+  --dark-blue: #14213d;
+  --blue: #0077b6;
+  --light-blue: #8ecae6;
 }
 
 @font-face {
-  font-family: 'Poiret One';
-  src: url('./fonts/PoiretOne-Regular.ttf') format('truetype');
+  font-family: 'Roboto';
+  src: url('../fonts/Roboto-Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Varela Round';
-  src: url('./fonts/VarelaRound-Regular.ttf') format('truetype');
-  font-weight: normal;
+  font-family: 'Open Sans';
+  src: url('../fonts/OpenSans-VariableFont_wdth\,wght.ttf') format('truetype');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Monsterrat';
+  src: url('../fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Nunito';
+  src: url('../fonts/Nunito-VariableFont_wght.ttf') format('truetype');
   font-style: normal;
 }
 
@@ -32,12 +44,12 @@ ul {
 .header {
   display: flex;
   justify-content: start;
-  background-color: var(--blue);
+  background-color: var(--dark-blue);
   padding: 0.5rem;
 }
 
 .header-title {
-  font-family: 'Poiret One';
+  font-family: 'Monsterrat';
   font-size: calc(2rem + 1vw);
   color: whitesmoke;
   margin-left: calc(3rem + 2vw);
@@ -61,35 +73,48 @@ ul {
 
 .project {
   display: flex;
-  font-family: 'Varela Round';
+  font-family: 'Nunito';
   padding: 1rem;
-  font-size: calc(1rem + 1vh);
+  user-select: none;
+}
+
+.project:hover {
+  background-color: var(--light-blue);
+}
+
+.project-nav,
+.project-length {
+  font-size: calc(1rem + 1vw);
 }
 
 .project-nav {
-  padding-right: 12vw;
+  margin-right: 12vw;
+}
+
+.project-nav:hover {
+  cursor: pointer;
 }
 
 .project-name {
   font-size: calc(1rem + 2vh);
-  font-family: 'Varela Round';
+  font-family: 'Nunito';
   padding-bottom: 2rem;
 }
 
 .footer {
-  background-color: var(--blue);
+  background-color: var(--dark-blue);
   padding: 0.5rem;
   text-align: center;
 }
 
 .footer-text {
   color: whitesmoke;
-  font-family: 'Varela Round';
+  font-family: 'Monsterrat';
   font-size: calc(1rem + 1vh);
   margin-left: calc(3rem + 2vw);
 }
 
-.tasks-container {
+.article-container {
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
@@ -98,13 +123,20 @@ ul {
 }
 
 .task-list {
-  font-size: 1.5rem;
   margin: 0;
   padding: 0;
 }
 
 .task {
+  font-family: 'Roboto';
   padding-top: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.task span {
+  font-size: calc(1rem + 0.5vw);
+  padding-left: 1rem;
 }
 
 .add-button-container {
@@ -112,22 +144,20 @@ ul {
 }
 
 .add-button {
+  font-family: 'Open Sans';
+  font-weight: lighter;
   display: flex;
   place-items: center;
-  background-color: var(--blue);
+  background-color: white;
   border: 1px solid transparent;
   border-radius: 0.75rem;
   box-sizing: border-box;
-  color: white;
+  color: #adb5bd;
   cursor: pointer;
   flex: 0 0 auto;
-  font-family: 'Inter var', ui-sans-serif, system-ui, -apple-system, system-ui, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol', 'Noto Color Emoji';
   font-size: 1.125rem;
-  font-weight: 600;
-  line-height: 1.5rem;
   padding: 0.75rem;
+  padding-left: 0;
   text-align: center;
   text-decoration: none #6b7280 solid;
   text-decoration-thickness: auto;
@@ -141,13 +171,8 @@ ul {
 }
 
 .add-button:hover {
-  background-color: var(--light-blue);
-}
-
-.add-button:focus {
-  box-shadow: none;
-  outline: 2px solid transparent;
-  outline-offset: 2px;
+  color: black;
+  transition-duration: 1s;
 }
 
 .add-icon {
@@ -155,10 +180,22 @@ ul {
   padding-right: 0.5rem;
 }
 
-@media (min-width: 768px) {
-  add-button {
-    padding: 0.75rem 1.5rem;
-  }
+.add-button:hover .add-icon {
+  transition-duration: 1s;
 }
 
-/* TODO: ADD CHECKBOX STYLE */
+input[type='checkbox'] {
+  width: calc(1rem + 0.5vw);
+  height: calc(1rem + 0.5vw);
+  border-radius: 50%;
+  vertical-align: middle;
+  appearance: none;
+  background-color: white;
+  border: 1px solid var(--dark-blue);
+}
+
+input[type='checkbox']:checked {
+  background-color: var(--blue);
+}
+
+/* TODO: STYLE TASK CONTAINER */

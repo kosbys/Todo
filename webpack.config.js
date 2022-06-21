@@ -3,14 +3,20 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: './src/index.js',
+  entry: {
+    index: './src/index.js',
+    task: './src/modules/Task.js',
+    project: './src/modules/Project.js',
+    todo: './src/modules/Todo.js',
+    ui: './src/modules/UserInterface.js',
+  },
   plugins: [
     new HtmlWebpackPlugin({
       title: 'Todo',
     }),
   ],
   output: {
-    filename: 'bundle.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
   },
