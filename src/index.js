@@ -1,7 +1,4 @@
-import userInterface from './modules/UserInterface';
+import { userInterface, Events } from './modules/userInterface';
 import './style/style.css';
 
-const UI = userInterface();
-
-UI.createHeader();
-UI.createContent();
+userInterface.createPage();

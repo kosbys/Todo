@@ -11,6 +11,14 @@ class Project {
   deleteTask(task) {
     this.tasks.splice(this.tasks.indexOf(task), 1);
   }
+
+  getTask(task) {
+    if (this.tasks.includes(task)) {
+      return this.tasks.indexOf(task);
+    }
+
+    return false;
+  }
 }
 
 export default Project;

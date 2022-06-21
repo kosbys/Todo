@@ -4,11 +4,11 @@ import Todo from './Todo';
 import Add from '../images/add.svg';
 import AddBlack from '../images/add-black.svg';
 
-function userInterface() {
+const userInterface = (() => {
   const TodoList = new Todo();
   const main = new Project('main');
   const dummyTask = new Task('Trash', 'Trash', 'Trash', 'Trash');
-  const dummyTask2 = new Task('Trash', 'Trash', 'TRash', 'Trash');
+  const dummyTask2 = new Task('Trash', 'Trash', 'Trash', 'Trash');
   main.addTask(dummyTask);
   main.addTask(dummyTask2);
 
@@ -27,11 +27,33 @@ function userInterface() {
     document.body.appendChild(header);
   }
 
-  function createSidebar() {
-    const sidebar = document.createElement('div');
-    sidebar.classList.add('sidebar');
+  function addButton(type) {
+    const buttonContainer = document.createElement('div');
+    const button = document.createElement('button');
+    const buttonIcon = document.createElement('img');
+    const buttonText = document.createElement('span');
+    if (type === 'project') {
+      buttonContainer.classList.add('add-project-container');
+      button.classList.add('add-project-button');
+      buttonIcon.src = Add;
+      buttonText.textContent = 'ADD PROJECT';
+    } else if (type === 'task') {
+      buttonContainer.classList.add('add-task-container');
+      button.classList.add('add-task-button');
+      buttonIcon.src = Add;
+      buttonText.textContent = 'ADD TASK';
+    }
+    buttonIcon.classList.add('add-icon');
+    button.append(buttonIcon, buttonText);
+    buttonContainer.appendChild(button);
 
-    TodoList.projects.forEach((project) => {
+    return buttonContainer;
+  }
+
+  function updateProjects(todo) {
+    const projects = [];
+
+    todo.projects.forEach((project) => {
       const sidebarProject = document.createElement('div');
       sidebarProject.classList.add('project');
 
@@ -45,25 +67,26 @@ function userInterface() {
 
       sidebarProject.append(projectTitle, projectLength);
 
-      sidebar.appendChild(sidebarProject);
+      projects.push(sidebarProject);
     });
 
-    return sidebar;
+    return projects;
   }
 
-  function createAddButton() {
-    const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('add-button-container');
-    const button = document.createElement('button');
-    button.classList.add('add-button');
-    const buttonIcon = document.createElement('img');
-    buttonIcon.src = Add;
-    const buttonText = document.createElement('span');
-    buttonText.textContent = 'ADD TASK';
-    button.append(buttonIcon, buttonText);
-    buttonContainer.appendChild(button);
+  function createSidebar() {
+    const sidebar = document.createElement('div');
+    sidebar.classList.add('sidebar');
 
-    return buttonContainer;
+    const buttonContainer = addButton('project');
+
+    const projects = updateProjects(TodoList);
+    projects.forEach((project) => {
+      sidebar.appendChild(project);
+    });
+
+    sidebar.appendChild(buttonContainer);
+
+    return sidebar;
   }
 
   function createTaskList(project) {
@@ -110,7 +133,7 @@ function userInterface() {
 
     const taskList = createTaskList(defaultProject);
 
-    const buttonContainer = createAddButton();
+    const buttonContainer = addButton('task');
 
     container.append(projectName, taskList, buttonContainer);
 
@@ -131,12 +154,31 @@ function userInterface() {
   }
 
   function createFooter() {
-    // TODO: Create footer
+    const footer = document.createElement('div');
+    footer.classList.add('footer');
+
+    const text = document.createElement('span');
+    text.classList.add('footer-text');
+    text.textContent = 'TODO';
+
+    footer.appendChild(text);
+
+    document.body.appendChild(footer);
   }
 
-  return { createHeader, createContent };
+  function createPage() {
+    createHeader();
+    createContent();
+    createFooter();
+  }
+
+  return {
+    createPage,
+  };
+})();
+
+function Events() {
+  return {};
 }
 
-// TODO : INITIALIZE EACH SECTION
-
-export default userInterface;
+export { userInterface, Events };

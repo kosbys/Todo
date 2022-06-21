@@ -8,7 +8,7 @@ module.exports = {
     task: './src/modules/Task.js',
     project: './src/modules/Project.js',
     todo: './src/modules/Todo.js',
-    ui: './src/modules/UserInterface.js',
+    ui: './src/modules/userInterface.js',
   },
   plugins: [
     new HtmlWebpackPlugin({

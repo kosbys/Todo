@@ -2,6 +2,8 @@
   --dark-blue: #14213d;
   --blue: #0077b6;
   --light-blue: #8ecae6;
+  --grey: #adb5bd;
+  --black: #111827;
 }
 
 @font-face {
@@ -35,10 +37,6 @@ body {
   margin: 0;
   display: flex;
   flex-direction: column;
-}
-
-ul {
-  list-style: none;
 }
 
 .header {
@@ -128,10 +126,11 @@ ul {
 }
 
 .task {
+  display: flex;
   font-family: 'Roboto';
   padding-top: 1rem;
   display: flex;
-  align-items: center;
+  gap: 0.5rem;
 }
 
 .task-details {
@@ -139,11 +138,16 @@ ul {
   flex-direction: column;
 }
 
-.add-button-container {
+.task-title {
+  font-size: calc(1rem + 0.5vw);
+  margin: 0;
+}
+
+.add-task-button-container {
   margin-top: 2rem;
 }
 
-.add-button {
+.add-task-button {
   font-family: 'Open Sans';
   font-weight: lighter;
   display: flex;
@@ -152,12 +156,42 @@ ul {
   border: 1px solid transparent;
   border-radius: 0.75rem;
   box-sizing: border-box;
-  color: #adb5bd;
+  color: var(--grey);
   cursor: pointer;
   flex: 0 0 auto;
   font-size: 1.125rem;
   padding: 0.75rem;
   padding-left: 0;
+  text-align: center;
+  text-decoration-thickness: auto;
+  transition-duration: 0.2s;
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: auto;
+}
+
+.add-task-button:hover {
+  color: var(--black);
+  transition-duration: 0.4s;
+}
+
+.add-project-button {
+  display: flex;
+  place-items: center;
+  background-color: var(--black);
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  box-sizing: border-box;
+  color: white;
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.5rem;
+  padding: 0.75rem 1.2rem;
   text-align: center;
   text-decoration: none #6b7280 solid;
   text-decoration-thickness: auto;
@@ -170,9 +204,28 @@ ul {
   width: auto;
 }
 
-.add-button:hover {
-  color: black;
-  transition-duration: 1s;
+.add-project-button:hover {
+  background-color: white;
+  color: var(--black);
+  border: 1px solid var(--dark-blue);
+  transition-duration: 0.4s;
+}
+
+.add-project-button:focus {
+  box-shadow: none;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+
+@media (min-width: 768px) {
+  .add-project-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+.add-project-container {
+  margin: 1rem;
 }
 
 .add-icon {
@@ -180,15 +233,10 @@ ul {
   padding-right: 0.5rem;
 }
 
-.add-button:hover .add-icon {
-  transition-duration: 1s;
-}
-
 input[type='checkbox'] {
   width: calc(1rem + 0.5vw);
   height: calc(1rem + 0.5vw);
   border-radius: 50%;
-  vertical-align: middle;
   appearance: none;
   background-color: white;
   border: 1px solid var(--dark-blue);
@@ -198,4 +246,4 @@ input[type='checkbox']:checked {
   background-color: var(--blue);
 }
 
-/* TODO: STYLE TASK CONTAINER */
+/* TODO: CLEAN UP UNUSED */
