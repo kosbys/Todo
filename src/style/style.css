@@ -134,9 +134,9 @@ ul {
   align-items: center;
 }
 
-.task span {
-  font-size: calc(1rem + 0.5vw);
-  padding-left: 1rem;
+.task-details {
+  display: flex;
+  flex-direction: column;
 }
 
 .add-button-container {

@@ -7,7 +7,7 @@ import AddBlack from '../images/add-black.svg';
 function userInterface() {
   const TodoList = new Todo();
   const main = new Project('main');
-  const dummyTask = new Task('Trash', 'Trash', 'TRash', 'Trash');
+  const dummyTask = new Task('Trash', 'Trash', 'Trash', 'Trash');
   const dummyTask2 = new Task('Trash', 'Trash', 'TRash', 'Trash');
   main.addTask(dummyTask);
   main.addTask(dummyTask2);
@@ -51,21 +51,26 @@ function userInterface() {
     return sidebar;
   }
 
-  function createTaskContainer() {
-    const container = document.createElement('div');
-    container.classList.add('article-container');
+  function createAddButton() {
+    const buttonContainer = document.createElement('div');
+    buttonContainer.classList.add('add-button-container');
+    const button = document.createElement('button');
+    button.classList.add('add-button');
+    const buttonIcon = document.createElement('img');
+    buttonIcon.src = Add;
+    const buttonText = document.createElement('span');
+    buttonText.textContent = 'ADD TASK';
+    button.append(buttonIcon, buttonText);
+    buttonContainer.appendChild(button);
 
-    const defaultProject = TodoList.projects[0];
+    return buttonContainer;
+  }
 
-    const projectName = document.createElement('div');
-    projectName.classList.add('project-name');
-    projectName.textContent = defaultProject.name;
-
-    // TODO: REFACTOR
+  function createTaskList(project) {
     const taskList = document.createElement('div');
     taskList.classList.add('task-container');
 
-    defaultProject.tasks.forEach((task) => {
+    project.tasks.forEach((task) => {
       const taskItem = document.createElement('div');
       taskItem.classList.add('task');
 
@@ -90,17 +95,22 @@ function userInterface() {
       taskList.appendChild(taskItem);
     });
 
-    // TODO: REFACTOR
-    const buttonContainer = document.createElement('div');
-    buttonContainer.classList.add('add-button-container');
-    const button = document.createElement('button');
-    button.classList.add('add-button');
-    const buttonIcon = document.createElement('img');
-    buttonIcon.src = Add;
-    const buttonText = document.createElement('span');
-    buttonText.textContent = 'ADD TASK';
-    button.append(buttonIcon, buttonText);
-    buttonContainer.appendChild(button);
+    return taskList;
+  }
+
+  function createTaskContainer() {
+    const container = document.createElement('div');
+    container.classList.add('article-container');
+
+    const defaultProject = TodoList.projects[0];
+
+    const projectName = document.createElement('div');
+    projectName.classList.add('project-name');
+    projectName.textContent = defaultProject.name;
+
+    const taskList = createTaskList(defaultProject);
+
+    const buttonContainer = createAddButton();
 
     container.append(projectName, taskList, buttonContainer);
 
