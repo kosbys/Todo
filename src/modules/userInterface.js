@@ -32,6 +32,7 @@ const userInterface = (() => {
     const button = document.createElement('button');
     const buttonIcon = document.createElement('img');
     const buttonText = document.createElement('span');
+
     if (type === 'project') {
       buttonContainer.classList.add('add-project-container');
       button.classList.add('add-project-button');
@@ -43,6 +44,7 @@ const userInterface = (() => {
       buttonIcon.src = Add;
       buttonText.textContent = 'ADD TASK';
     }
+
     buttonIcon.classList.add('add-icon');
     button.append(buttonIcon, buttonText);
     buttonContainer.appendChild(button);
@@ -73,26 +75,8 @@ const userInterface = (() => {
     return projects;
   }
 
-  function createSidebar() {
-    const sidebar = document.createElement('div');
-    sidebar.classList.add('sidebar');
-
-    const buttonContainer = addButton('project');
-
-    const projects = updateProjects(TodoList);
-    projects.forEach((project) => {
-      sidebar.appendChild(project);
-    });
-
-    sidebar.appendChild(buttonContainer);
-
-    return sidebar;
-  }
-
-  function createTaskList(project) {
-    const taskList = document.createElement('div');
-    taskList.classList.add('task-container');
-
+  function updateTasks(project) {
+    const tasks = [];
     project.tasks.forEach((task) => {
       const taskItem = document.createElement('div');
       taskItem.classList.add('task');
@@ -115,7 +99,36 @@ const userInterface = (() => {
 
       taskItem.append(checkbox, taskDetails);
 
-      taskList.appendChild(taskItem);
+      tasks.push(taskItem);
+    });
+
+    return tasks;
+  }
+
+  function createSidebar() {
+    const sidebar = document.createElement('div');
+    sidebar.classList.add('sidebar');
+
+    const buttonContainer = addButton('project');
+
+    const projects = updateProjects(TodoList);
+    projects.forEach((project) => {
+      sidebar.appendChild(project);
+    });
+
+    sidebar.appendChild(buttonContainer);
+
+    return sidebar;
+  }
+
+  function createTaskList(project) {
+    const taskList = document.createElement('div');
+    taskList.classList.add('task-container');
+
+    const tasks = updateTasks(project);
+
+    tasks.forEach((task) => {
+      taskList.appendChild(task);
     });
 
     return taskList;
@@ -174,10 +187,37 @@ const userInterface = (() => {
 
   return {
     createPage,
+    updateProjects,
+    updateTasks,
   };
 })();
 
 function Events() {
+  (function addProjectHover() {
+    const button = document.getElementsByClassName('add-project-button')[0];
+
+    button.addEventListener('mouseenter', () => {
+      const icon = document.getElementsByClassName('add-icon')[0];
+      icon.src = AddBlack;
+    });
+    button.addEventListener('mouseleave', () => {
+      const icon = document.getElementsByClassName('add-icon')[0];
+      icon.src = Add;
+    });
+  })();
+
+  (function addTaskHover() {
+    const button = document.getElementsByClassName('add-task-button')[0];
+    button.addEventListener('mouseenter', () => {
+      const icon = document.getElementsByClassName('add-icon')[1];
+      icon.src = AddBlack;
+    });
+    button.addEventListener('mouseleave', () => {
+      const icon = document.getElementsByClassName('add-icon')[1];
+      icon.src = Add;
+    });
+  })();
+
   return {};
 }
 

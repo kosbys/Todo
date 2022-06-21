@@ -175,7 +175,7 @@ body {
 
 .add-task-button:hover {
   color: var(--black);
-  transition-duration: 0.4s;
+  transition-duration: 0.2s;
 }
 
 .add-project-button {
@@ -189,9 +189,9 @@ body {
   cursor: pointer;
   flex: 0 0 auto;
   font-size: 1.125rem;
+  padding: 1rem;
   font-weight: 600;
   line-height: 1.5rem;
-  padding: 0.75rem 1.2rem;
   text-align: center;
   text-decoration: none #6b7280 solid;
   text-decoration-thickness: auto;
@@ -208,7 +208,7 @@ body {
   background-color: white;
   color: var(--black);
   border: 1px solid var(--dark-blue);
-  transition-duration: 0.4s;
+  transition-duration: 0.2s;
 }
 
 .add-project-button:focus {
@@ -217,14 +217,8 @@ body {
   outline-offset: 2px;
 }
 
-@media (min-width: 768px) {
-  .add-project-button {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-  }
-}
-
 .add-project-container {
+  display: flex;
   margin: 1rem;
 }
 
