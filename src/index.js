@@ -1,4 +1,5 @@
-import { userInterface, Events } from './modules/userInterface';
+import userInterface from './modules/userInterface';
+import Events from './modules/Events';
 import './style/style.css';
 
 userInterface.createPage();

@@ -4,7 +4,6 @@ import Project from './Project';
 import Task from './Task';
 import Todo from './Todo';
 import Add from '../images/add.svg';
-import AddBlack from '../images/add-black.svg';
 
 const TodoList = new Todo();
 const main = new Project('main');
@@ -351,7 +350,6 @@ const userInterface = (() => {
   }
 
   function createTaskForm() {
-    // ADD DATE
     const taskContainer = document.getElementsByClassName('task-container')[0];
 
     const form = document.createElement('form');
@@ -379,48 +377,15 @@ const userInterface = (() => {
     toggleAddTaskDisplay();
   }
 
+  function createProjectForm() {}
+
   return {
     createPage,
     getProjectsDiv,
     getTasksDiv,
     createTaskForm,
+    createProjectForm,
   };
 })();
 
-function Events() {
-  (function addProjectHover() {
-    const button = document.getElementById('add-project-button');
-
-    button.addEventListener('mouseenter', () => {
-      const icon = document.getElementById('add-project-icon');
-      icon.src = AddBlack;
-    });
-    button.addEventListener('mouseleave', () => {
-      const icon = document.getElementById('add-project-icon');
-      icon.src = Add;
-    });
-  })();
-
-  (function addTaskHover() {
-    const button = document.getElementById('add-task-button');
-    button.addEventListener('mouseenter', () => {
-      const icon = document.getElementById('add-task-icon');
-      icon.src = AddBlack;
-    });
-    button.addEventListener('mouseleave', () => {
-      const icon = document.getElementById('add-task-icon');
-      icon.src = Add;
-    });
-  })();
-
-  (function addTaskEvent() {
-    const addButton = document.getElementById('add-task-button');
-    addButton.addEventListener('click', userInterface.createTaskForm);
-  })();
-
-  return {};
-}
-
-/* TODO: ADD PROJECT FORM */
-
-export { userInterface, Events };
+export default userInterface;
