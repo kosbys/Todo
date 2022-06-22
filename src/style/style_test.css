@@ -121,6 +121,10 @@ body {
   padding-top: 3rem;
 }
 
+.tasks-container {
+  width: 500px;
+}
+
 .task-list {
   margin: 0;
   padding: 0;
@@ -232,63 +236,16 @@ input[type='checkbox']:checked {
   background-color: var(--blue);
 }
 
-input[type='text'] {
-  font-size: 1rem;
-  width: 100%;
-  color: black;
-  box-sizing: border-box;
-  letter-spacing: 1px;
-}
-
-.text-input,
-.textarea-input {
-  outline: none;
-  border: none;
-  font-family: 'Roboto';
-  resize: none;
-}
-
-.textarea-input {
-  font-size: 1.2rem;
-  word-wrap: break-word;
-  height: 60%;
-}
-
-.task-input-container {
-  height: 100%;
-  border: 1px solid var(--grey);
-  border-radius: 1rem;
-  padding: 1rem;
-  width: 40%;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.input-container {
-  float: left;
-  position: relative;
-}
-
-.form-buttons {
-  display: flex;
-}
-
-@media screen and (max-width: 800px) {
-  .sidebar {
-    width: calc(5rem + 3vw);
-  }
-
+@media screen and (max-width: 500px) {
   .header {
     height: 15px;
   }
-
   .header-title {
     font-size: 1.2rem;
   }
 
   .footer {
-    height: 20px;
+    height: 15px;
     padding: 0.25rem;
   }
   .footer-text {
@@ -296,6 +253,67 @@ input[type='text'] {
   }
 }
 
-/* TODO: STYLE NEW BUTTONS
- .cancel-button
- .confirm-button */
+input[type='text'] {
+  font-size: 1rem;
+  font-family: 'Roboto';
+  color: black;
+  width: 100%;
+  box-sizing: border-box;
+  letter-spacing: 1px;
+}
+
+.input-container {
+  float: left;
+  width: 27.33%;
+  margin-top: 4rem;
+  position: relative;
+}
+
+.text-input {
+  border: 1px solid #ccc;
+  padding: 7px 14px 9px;
+  transition: 0.4s;
+}
+
+.text-input ~ .focus-border:before,
+.text-input ~ .focus-border:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: var(--light-blue);
+  transition: 0.4s;
+}
+.text-input ~ .focus-border:after {
+  top: auto;
+  bottom: 0;
+}
+.text-input ~ .focus-border i:before,
+.text-input ~ .focus-border i:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 2px;
+  height: 0;
+  background-color: var(--light-blue);
+  transition: 0.6s;
+}
+.text-input ~ .focus-border i:after {
+  left: auto;
+  right: 0;
+}
+.text-input:focus ~ .focus-border:before,
+.text-input:focus ~ .focus-border:after {
+  left: 0;
+  width: 100%;
+  transition: 0.4s;
+}
+.text-input:focus ~ .focus-border i:before,
+.text-input:focus ~ .focus-border i:after {
+  top: 0;
+  height: 100%;
+  transition: 0.6s;
+}

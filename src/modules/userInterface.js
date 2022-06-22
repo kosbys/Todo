@@ -3,17 +3,18 @@ import Task from './Task';
 import Todo from './Todo';
 import Add from '../images/add.svg';
 import AddBlack from '../images/add-black.svg';
+import { doc } from 'prettier';
+
+const TodoList = new Todo();
+const main = new Project('main');
+const dummyTask = new Task('Trash', 'Trash', 'Trash', 'Trash');
+const dummyTask2 = new Task('Trash', 'Trash', 'Trash', 'Trash');
+main.addTask(dummyTask);
+main.addTask(dummyTask2);
+
+TodoList.addProject(main);
 
 const userInterface = (() => {
-  const TodoList = new Todo();
-  const main = new Project('main');
-  const dummyTask = new Task('Trash', 'Trash', 'Trash', 'Trash');
-  const dummyTask2 = new Task('Trash', 'Trash', 'Trash', 'Trash');
-  main.addTask(dummyTask);
-  main.addTask(dummyTask2);
-
-  TodoList.addProject(main);
-
   function createHeader() {
     const header = document.createElement('div');
     header.classList.add('header');
@@ -31,22 +32,24 @@ const userInterface = (() => {
     const buttonContainer = document.createElement('div');
     const button = document.createElement('button');
     const buttonIcon = document.createElement('img');
+    buttonIcon.classList.add('add-icon');
     const buttonText = document.createElement('span');
 
     if (type === 'project') {
-      buttonContainer.classList.add('add-project-container');
-      button.classList.add('add-project-button');
+      buttonContainer.id = 'add-project-container';
+      button.id = 'add-project-button';
       buttonIcon.src = Add;
-      buttonText.textContent = 'ADD PROJECT';
+      buttonIcon.id = 'add-project-icon';
+      button.appendChild(buttonIcon);
     } else if (type === 'task') {
-      buttonContainer.classList.add('add-task-container');
-      button.classList.add('add-task-button');
+      buttonContainer.id = 'add-task-container';
+      button.id = 'add-task-button';
       buttonIcon.src = Add;
+      buttonIcon.id = 'add-task-icon';
       buttonText.textContent = 'ADD TASK';
+      button.append(buttonIcon, buttonText);
     }
 
-    buttonIcon.classList.add('add-icon');
-    button.append(buttonIcon, buttonText);
     buttonContainer.appendChild(button);
 
     return buttonContainer;
@@ -185,40 +188,88 @@ const userInterface = (() => {
     createFooter();
   }
 
+  function createTaskForm() {
+    const taskContainer = document.getElementsByClassName('task-container')[0];
+
+    const inputContainer = document.createElement('div');
+    inputContainer.classList.add('task-input-container');
+
+    const textInput = document.createElement('input');
+    textInput.type = 'text';
+    textInput.classList.add('text-input');
+    textInput.placeholder = 'Task';
+
+    const textArea = document.createElement('textarea');
+    textArea.classList.add('textarea-input');
+    textArea.contentEditable = true;
+    textArea.placeholder = 'Task Description';
+
+    const buttonDiv = document.createElement('div');
+    buttonDiv.classList.add('form-buttons');
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'CANCEL';
+    cancelButton.classList.add('cancel-button');
+    const confirmButton = document.createElement('button');
+    confirmButton.classList.add('confirm-button');
+    confirmButton.textContent = 'ADD';
+
+    buttonDiv.append(cancelButton, confirmButton);
+
+    inputContainer.append(textInput, textArea, buttonDiv);
+
+    taskContainer.appendChild(inputContainer);
+
+    document.getElementById('add-task-container').style.display = 'none';
+  }
+
   return {
     createPage,
     updateProjects,
     updateTasks,
+    createTaskForm,
   };
 })();
 
 function Events() {
   (function addProjectHover() {
-    const button = document.getElementsByClassName('add-project-button')[0];
+    const button = document.getElementById('add-project-button');
 
     button.addEventListener('mouseenter', () => {
-      const icon = document.getElementsByClassName('add-icon')[0];
+      const icon = document.getElementById('add-project-icon');
       icon.src = AddBlack;
     });
     button.addEventListener('mouseleave', () => {
-      const icon = document.getElementsByClassName('add-icon')[0];
+      const icon = document.getElementById('add-project-icon');
       icon.src = Add;
     });
   })();
 
   (function addTaskHover() {
-    const button = document.getElementsByClassName('add-task-button')[0];
+    const button = document.getElementById('add-task-button');
     button.addEventListener('mouseenter', () => {
-      const icon = document.getElementsByClassName('add-icon')[1];
+      const icon = document.getElementById('add-task-icon');
       icon.src = AddBlack;
     });
     button.addEventListener('mouseleave', () => {
-      const icon = document.getElementsByClassName('add-icon')[1];
+      const icon = document.getElementById('add-task-icon');
       icon.src = Add;
     });
   })();
 
+  (function addTaskEvent() {
+    const button = document.getElementById('add-task-button');
+    button.addEventListener('click', userInterface.createTaskForm);
+  })();
+
   return {};
 }
+
+/* TODO: ADD AND STYLE FORM
+document.querySelector("body > div.content > div.sidebar") = temp1
+document.querySelector("body > div.content > div.sidebar > div.add-project-container") = temp2
+const x = document.createElement('input')
+temp1.insertBefore(x, temp2)
+*/
 
 export { userInterface, Events };

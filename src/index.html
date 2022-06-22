@@ -2,12 +2,12 @@
 <html lang="en">
 
 <head>
-    <link rel="stylesheet" href="./style/style.css">
+    <link rel="stylesheet" href="./style/style_test.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="index.js" defer></script>
     <title>Todo</title>
+    <script src="text.js" defer></script>
 </head>
 
 <body>
@@ -19,19 +19,19 @@
         </div>
         <div class="tasks-container">
             <div class="project-name">MAIN</div>
-            <ul class="task-list">
-                <li class="task"> <input type="checkbox"> <span>Trash</span> </li>
-                <li class="task"> <input type="checkbox"> <span>Trash</span> </li>
-                <li class="task"> <input type="checkbox"> <span>Trash</span> </li>
-            </ul>
-            <div class="add-button-container">
-                <button class="add-button"> <img src="images/add.svg" alt="add" class="add-icon"> <span> ADD TASK</span>
-                </button>
+            <div class="input-container">
+                <input class="text-input" type="text" placeholder="Task">
+                <span class="focus-border">
+                    <i></i>
+                </span>
             </div>
         </div>
     </div>
+    </div>
     <div class="footer"><span class="footer-text">TODO</span></div>
     </div>
+
+    <button id="open-button" class="open-button">Open Button</button>
 </body>
 
 </html>
