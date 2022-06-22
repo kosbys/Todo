@@ -1,11 +1,10 @@
-import formatISO from 'date-fns/formatISO';
 import parseISO from 'date-fns/parseISO';
+import format from 'date-fns';
 import Project from './Project';
 import Task from './Task';
 import Todo from './Todo';
 import Add from '../images/add.svg';
 import AddBlack from '../images/add-black.svg';
-import { format } from 'date-fns';
 
 const TodoList = new Todo();
 const main = new Project('main');
@@ -90,6 +89,7 @@ const userInterface = (() => {
 
       const checkbox = document.createElement('input');
       checkbox.type = 'checkbox';
+      checkbox.classList.add(task.priority);
 
       const taskDetails = document.createElement('div');
       taskDetails.classList.add('task-details');
@@ -98,11 +98,15 @@ const userInterface = (() => {
       taskTitle.classList.add('task-title');
       taskTitle.textContent = task.title;
 
+      const dueDate = document.createElement('div');
+      dueDate.classList.add('task-date-display');
+      dueDate.textContent = `Due date: ${task.dueDate}`;
+
       const taskDescription = document.createElement('p');
       taskDescription.classList.add('task-description');
       taskDescription.textContent = task.description;
 
-      taskDetails.append(taskTitle, taskDescription);
+      taskDetails.append(taskTitle, taskDescription, dueDate);
 
       taskItem.append(checkbox, taskDetails);
 
@@ -247,18 +251,43 @@ const userInterface = (() => {
     return radioDiv;
   }
 
+  function validateForm(data) {
+    function requiredFieldsNotice() {
+      const container = document.getElementsByClassName('task-form')[0];
+      if (container.lastChild.classList.contains('required-fields-notice')) {
+        return;
+      }
+      const notice = document.createElement('div');
+      notice.classList.add('required-fields-notice');
+
+      notice.textContent = 'One or more required fields are missing,';
+
+      container.appendChild(notice);
+    }
+
+    if (data.name === '' || data.data === '' || data.priority === '') {
+      requiredFieldsNotice();
+      return false;
+    }
+    return true;
+  }
+
   function formToTask() {
+    const article = document.getElementsByClassName('article-container')[0];
     const formData = new FormData(document.getElementsByClassName('task-form')[0]);
     const form = document.getElementsByClassName('task-form')[0];
-    const data = {};
+    const data = { priority: '' };
 
     [...formData].forEach((element) => {
       const [key, value] = element;
       Object.assign(data, { [key]: value });
     });
 
-    data.date = parseISO(data.date);
+    if (!validateForm(data)) {
+      return;
+    }
 
+    data.date = parseISO(data.date);
     data.date = format(data.date, 'yyyy-MM-dd');
 
     form.remove();
@@ -269,16 +298,12 @@ const userInterface = (() => {
 
     currentProject.addTask(task);
 
+    const newTasks = createTaskList(currentProject);
+
     const oldTasks = document.getElementsByClassName('task-container')[0];
     oldTasks.remove();
 
-    const newTasks = createTaskList(currentProject);
-
-    const article = document.getElementsByClassName('article-container')[0];
-
     article.insertBefore(newTasks, document.getElementById('add-task-container'));
-
-    console.log(data);
   }
 
   function taskFormButtons() {
@@ -396,11 +421,6 @@ function Events() {
   return {};
 }
 
-/* TODO: ADD AND STYLE FORM
-document.querySelector("body > div.content > div.sidebar") = temp1
-document.querySelector("body > div.content > div.sidebar > div.add-project-container") = temp2
-const x = document.createElement('input')
-temp1.insertBefore(x, temp2)
-*/
+/* TODO: ADD PROJECT FORM */
 
 export { userInterface, Events };
