@@ -4,6 +4,9 @@
   --light-blue: #8ecae6;
   --grey: #adb5bd;
   --black: #111827;
+  --red: #cf4d42;
+  --orange: #ff5400;
+  --green: #19995c;
 }
 
 @font-face {
@@ -241,21 +244,23 @@ input[type='text'] {
 }
 
 .text-input,
-.textarea-input {
+.textarea-input,
+.date-input {
   outline: none;
   border: none;
   font-family: 'Roboto';
   resize: none;
+  font-size: 1rem;
+  border-bottom: 1px solid black;
 }
 
 .textarea-input {
   font-size: 1.2rem;
   word-wrap: break-word;
-  height: 60%;
+  height: 100%;
 }
 
-.task-input-container {
-  height: 100%;
+form {
   border: 1px solid var(--grey);
   border-radius: 1rem;
   padding: 1rem;
@@ -272,6 +277,119 @@ input[type='text'] {
 
 .form-buttons {
   display: flex;
+  gap: 1rem;
+  place-content: flex-end;
+}
+
+.task-date {
+  display: flex;
+  gap: 0.5rem;
+  font-family: 'Roboto';
+}
+
+#cancel-button {
+  background-color: white;
+  border: 1px solid var(--black);
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: var(--black);
+  cursor: pointer;
+  display: inline-block;
+  font-family: 'Open Sans';
+  font-weight: 600;
+  margin: 0;
+  outline: none;
+  padding: 0.5rem;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  touch-action: manipulation;
+  transition: box-shadow 0.2s, -ms-transform 0.1s, -webkit-transform 0.1s, transform 0.1s;
+  user-select: none;
+  -webkit-user-select: none;
+  width: auto;
+}
+
+#cancel-button:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  transition: box-shadow 0.2s;
+}
+
+#cancel-button:active {
+  background-color: #f7f7f7;
+  border-color: #000000;
+  transform: scale(0.96);
+}
+
+#cancel-button:disabled {
+  border-color: #dddddd;
+  color: #dddddd;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+#confirm-button {
+  background-color: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: white;
+  cursor: pointer;
+  display: inline-block;
+  font-family: 'Open Sans';
+  font-weight: 600;
+  margin: 0;
+  outline: none;
+  padding: 0.5rem;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  touch-action: manipulation;
+  transition: box-shadow 0.2s, -ms-transform 0.1s, -webkit-transform 0.1s, transform 0.1s;
+  user-select: none;
+  -webkit-user-select: none;
+  width: auto;
+}
+
+#confirm-button:focus-visible {
+  box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
+  transition: box-shadow 0.2s;
+}
+
+#confirm-button:active {
+  background-color: var(--blue);
+  border-color: var(--dark-blue);
+  transform: scale(0.96);
+}
+
+#confirm-button:disabled {
+  border-color: #dddddd;
+  color: #dddddd;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+input[type='radio'] {
+  width: 30px;
+}
+
+.radio-buttons {
+  display: flex;
+  font-family: 'Roboto';
+  font-size: 1.05rem;
+  gap: 0.2rem;
+}
+
+#high {
+  accent-color: var(--red);
+}
+
+#medium {
+  accent-color: var(--orange);
+}
+
+#low {
+  accent-color: var(--green);
 }
 
 @media screen and (max-width: 800px) {
@@ -294,8 +412,8 @@ input[type='text'] {
   .footer-text {
     font-size: 1rem;
   }
-}
 
-/* TODO: STYLE NEW BUTTONS
- .cancel-button
- .confirm-button */
+  .form-buttons {
+    gap: 5px;
+  }
+}

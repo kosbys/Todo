@@ -3,7 +3,6 @@ import Task from './Task';
 import Todo from './Todo';
 import Add from '../images/add.svg';
 import AddBlack from '../images/add-black.svg';
-import { doc } from 'prettier';
 
 const TodoList = new Todo();
 const main = new Project('main');
@@ -15,6 +14,8 @@ main.addTask(dummyTask2);
 TodoList.addProject(main);
 
 const userInterface = (() => {
+  const currentProject = main;
+
   function createHeader() {
     const header = document.createElement('div');
     header.classList.add('header');
@@ -188,39 +189,151 @@ const userInterface = (() => {
     createFooter();
   }
 
-  function createTaskForm() {
-    const taskContainer = document.getElementsByClassName('task-container')[0];
-
-    const inputContainer = document.createElement('div');
-    inputContainer.classList.add('task-input-container');
-
+  function taskFormText() {
     const textInput = document.createElement('input');
     textInput.type = 'text';
     textInput.classList.add('text-input');
     textInput.placeholder = 'Task';
+    textInput.name = 'name';
+    textInput.minLength = 1;
+    textInput.maxLength = 25;
 
+    return textInput;
+  }
+
+  function taskFormTextArea() {
     const textArea = document.createElement('textarea');
     textArea.classList.add('textarea-input');
     textArea.contentEditable = true;
     textArea.placeholder = 'Task Description';
+    textArea.name = 'description';
+    textArea.maxLength = 120;
 
+    return textArea;
+  }
+
+  function toggleAddTaskDisplay() {
+    const button = document.getElementById('add-task-container');
+
+    if (button.style.display !== 'none') {
+      button.style.display = 'none';
+    } else {
+      button.style.display = 'block';
+    }
+  }
+
+  function taskFormRadio() {
+    const radioDiv = document.createElement('div');
+    radioDiv.classList.add('radio-buttons');
+
+    const priorities = ['High', 'Medium', 'Low'];
+
+    priorities.forEach((element) => {
+      const priority = document.createElement('input');
+      priority.type = 'radio';
+      priority.classList.add('radio-button');
+      priority.id = element.toLowerCase();
+      priority.value = element.toLowerCase();
+      priority.name = 'priority';
+
+      const label = document.createElement('label');
+      label.htmlFor = priority.id;
+      label.textContent = element;
+
+      radioDiv.append(priority, label);
+    });
+
+    return radioDiv;
+  }
+
+  function formToTask() {
+    const formData = new FormData(document.getElementsByClassName('task-form')[0]);
+    const form = document.getElementsByClassName('task-form')[0];
+    const data = {};
+
+    [...formData].forEach((element) => {
+      const [key, value] = element;
+      Object.assign(data, { [key]: value });
+    });
+
+    form.remove();
+
+    toggleAddTaskDisplay();
+
+    console.log(data);
+  }
+
+  function taskFormButtons() {
     const buttonDiv = document.createElement('div');
     buttonDiv.classList.add('form-buttons');
 
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'CANCEL';
-    cancelButton.classList.add('cancel-button');
+    cancelButton.id = 'cancel-button';
+    cancelButton.type = 'button';
     const confirmButton = document.createElement('button');
-    confirmButton.classList.add('confirm-button');
+    confirmButton.id = 'confirm-button';
+    confirmButton.type = 'button';
     confirmButton.textContent = 'ADD';
+    confirmButton.type = 'button';
+
+    confirmButton.addEventListener('click', formToTask);
+
+    cancelButton.addEventListener('click', () => {
+      document.getElementsByClassName('task-form')[0].remove();
+      toggleAddTaskDisplay();
+    });
 
     buttonDiv.append(cancelButton, confirmButton);
 
-    inputContainer.append(textInput, textArea, buttonDiv);
+    return buttonDiv;
+  }
+
+  function taskFormDate() {
+    const dateDiv = document.createElement('div');
+    dateDiv.classList.add('task-date');
+
+    const date = document.createElement('input');
+    date.type = 'date';
+    date.name = 'date';
+    date.classList.add('date-input');
+
+    const label = document.createElement('label');
+    label.htmlFor = 'date';
+    label.textContent = 'Due:';
+
+    dateDiv.append(label, date);
+
+    return dateDiv;
+  }
+
+  function createTaskForm() {
+    // ADD DATE
+    const taskContainer = document.getElementsByClassName('task-container')[0];
+
+    const form = document.createElement('form');
+    form.classList.add('task-form');
+
+    const inputContainer = document.createElement('div');
+    inputContainer.classList.add('task-input-container');
+
+    const textInput = taskFormText();
+
+    const textArea = taskFormTextArea();
+
+    const dateInput = taskFormDate();
+
+    const radioButtons = taskFormRadio();
+
+    const buttonDiv = taskFormButtons();
+
+    form.append(textInput, textArea, dateInput, radioButtons, buttonDiv);
+
+    inputContainer.appendChild(form);
 
     taskContainer.appendChild(inputContainer);
 
-    document.getElementById('add-task-container').style.display = 'none';
+    toggleAddTaskDisplay();
   }
 
   return {
@@ -258,8 +371,8 @@ function Events() {
   })();
 
   (function addTaskEvent() {
-    const button = document.getElementById('add-task-button');
-    button.addEventListener('click', userInterface.createTaskForm);
+    const addButton = document.getElementById('add-task-button');
+    addButton.addEventListener('click', userInterface.createTaskForm);
   })();
 
   return {};
