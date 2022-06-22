@@ -1,8 +1,11 @@
+import formatISO from 'date-fns/formatISO';
+import parseISO from 'date-fns/parseISO';
 import Project from './Project';
 import Task from './Task';
 import Todo from './Todo';
 import Add from '../images/add.svg';
 import AddBlack from '../images/add-black.svg';
+import { format } from 'date-fns';
 
 const TodoList = new Todo();
 const main = new Project('main');
@@ -56,7 +59,7 @@ const userInterface = (() => {
     return buttonContainer;
   }
 
-  function updateProjects(todo) {
+  function getProjectsDiv(todo) {
     const projects = [];
 
     todo.projects.forEach((project) => {
@@ -79,7 +82,7 @@ const userInterface = (() => {
     return projects;
   }
 
-  function updateTasks(project) {
+  function getTasksDiv(project) {
     const tasks = [];
     project.tasks.forEach((task) => {
       const taskItem = document.createElement('div');
@@ -115,7 +118,7 @@ const userInterface = (() => {
 
     const buttonContainer = addButton('project');
 
-    const projects = updateProjects(TodoList);
+    const projects = getProjectsDiv(TodoList);
     projects.forEach((project) => {
       sidebar.appendChild(project);
     });
@@ -129,7 +132,7 @@ const userInterface = (() => {
     const taskList = document.createElement('div');
     taskList.classList.add('task-container');
 
-    const tasks = updateTasks(project);
+    const tasks = getTasksDiv(project);
 
     tasks.forEach((task) => {
       taskList.appendChild(task);
@@ -138,17 +141,15 @@ const userInterface = (() => {
     return taskList;
   }
 
-  function createTaskContainer() {
+  function createTaskContainer(project) {
     const container = document.createElement('div');
     container.classList.add('article-container');
 
-    const defaultProject = TodoList.projects[0];
-
     const projectName = document.createElement('div');
     projectName.classList.add('project-name');
-    projectName.textContent = defaultProject.name;
+    projectName.textContent = project.name;
 
-    const taskList = createTaskList(defaultProject);
+    const taskList = createTaskList(project);
 
     const buttonContainer = addButton('task');
 
@@ -163,7 +164,7 @@ const userInterface = (() => {
 
     const sidebar = createSidebar();
 
-    const taskContainer = createTaskContainer();
+    const taskContainer = createTaskContainer(currentProject);
 
     content.append(sidebar, taskContainer);
 
@@ -256,9 +257,26 @@ const userInterface = (() => {
       Object.assign(data, { [key]: value });
     });
 
+    data.date = parseISO(data.date);
+
+    data.date = format(data.date, 'yyyy-MM-dd');
+
     form.remove();
 
     toggleAddTaskDisplay();
+
+    const task = new Task(data.name, data.description, data.date, data.priority);
+
+    currentProject.addTask(task);
+
+    const oldTasks = document.getElementsByClassName('task-container')[0];
+    oldTasks.remove();
+
+    const newTasks = createTaskList(currentProject);
+
+    const article = document.getElementsByClassName('article-container')[0];
+
+    article.insertBefore(newTasks, document.getElementById('add-task-container'));
 
     console.log(data);
   }
@@ -338,8 +356,8 @@ const userInterface = (() => {
 
   return {
     createPage,
-    updateProjects,
-    updateTasks,
+    getProjectsDiv,
+    getTasksDiv,
     createTaskForm,
   };
 })();
