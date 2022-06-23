@@ -3,6 +3,18 @@ import Add from '../images/add.svg';
 import AddBlack from '../images/add-black.svg';
 
 function Events() {
+  function taskDelete() {
+    const buttons = document.getElementsByClassName('delete-task');
+
+    [...buttons].forEach((button) => {
+      const task = button.closest('.task-details').firstChild.textContent;
+      button.addEventListener('click', () => {
+        userInterface.deleteTask(task);
+        taskDelete();
+      });
+    });
+  }
+
   function changeProjectClick() {
     const projects = document.getElementsByClassName('project');
 
@@ -10,6 +22,7 @@ function Events() {
       const projectName = project.querySelector('.project-nav');
       project.addEventListener('click', () => {
         userInterface.setCurrentProject(projectName.textContent);
+        taskDelete();
       });
     });
   }
@@ -80,6 +93,7 @@ function Events() {
     confirmButton.addEventListener('click', () => {
       userInterface.formtoProject();
       changeProjectClick();
+      taskDelete();
     });
   })();
 
@@ -100,6 +114,7 @@ function Events() {
     confirmButton.addEventListener('click', () => {
       userInterface.formToTask();
       taskCheckboxClick();
+      taskDelete();
     });
   })();
 
@@ -114,7 +129,7 @@ function Events() {
     });
   })();
 
-  return {};
+  return { taskDelete, taskCheckboxClick };
 }
 
 export default Events;

@@ -6,11 +6,9 @@ import Todo from './Todo';
 import Add from '../images/add.svg';
 
 const TodoList = new Todo();
-const main = new Project('main');
-const dummyTask = new Task('Trash', 'Trash', 'Trash', 'Trash');
-const dummyTask2 = new Task('Trash', 'Trash', 'Trash', 'Trash');
+const main = new Project('Default');
+const dummyTask = new Task('Spaghetti', 'Eat some pasta', 'ASAP', 'high');
 main.addTask(dummyTask);
-main.addTask(dummyTask2);
 
 TodoList.addProject(main);
 
@@ -100,6 +98,15 @@ const userInterface = (() => {
       taskTitle.classList.add('task-title');
       taskTitle.textContent = task.title;
 
+      const buttons = document.createElement('div');
+      buttons.classList.add('task-buttons');
+
+      const taskDelete = document.createElement('button');
+      taskDelete.classList.add('delete-task');
+      taskDelete.textContent = 'DELETE';
+
+      buttons.append(taskDelete);
+
       const dueDate = document.createElement('div');
       dueDate.classList.add('task-date-display');
       dueDate.innerHTML = `Due date: <strong>${task.dueDate}</strong>`;
@@ -108,7 +115,7 @@ const userInterface = (() => {
       taskDescription.classList.add('task-description');
       taskDescription.textContent = task.description;
 
-      taskDetails.append(taskTitle, taskDescription, dueDate);
+      taskDetails.append(taskTitle, taskDescription, dueDate, buttons);
 
       taskItem.append(checkbox, taskDetails);
 
@@ -199,7 +206,6 @@ const userInterface = (() => {
   function taskFormTextArea() {
     const textArea = document.createElement('textarea');
     textArea.classList.add('textarea-input');
-    textArea.contentEditable = true;
     textArea.placeholder = 'Task Description';
     textArea.name = 'description';
     textArea.maxLength = 120;
@@ -501,6 +507,14 @@ const userInterface = (() => {
     projectHeader.textContent = currentProject.name;
   }
 
+  function deleteTask(taskName) {
+    const task = currentProject.tasks.find((currentTask) => currentTask.title === taskName);
+
+    currentProject.deleteTask(task);
+    updateTasks(currentProject);
+    updateProjects(TodoList);
+  }
+
   function createPage() {
     createHeader();
     createContent();
@@ -515,6 +529,7 @@ const userInterface = (() => {
     formToTask,
     formtoProject,
     setCurrentProject,
+    deleteTask,
   };
 })();
 

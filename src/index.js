@@ -4,3 +4,5 @@ import './style/style.css';
 
 userInterface.createPage();
 const events = new Events();
+events.taskDelete();
+events.taskCheckboxClick();
