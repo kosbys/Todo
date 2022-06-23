@@ -534,5 +534,3 @@ const userInterface = (() => {
 })();
 
 export default userInterface;
-
-// TODO : checkbox functionality
