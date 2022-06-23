@@ -267,7 +267,7 @@ input[type='text'] {
   width: 100%;
 }
 
-form {
+.task-form {
   border: 1px solid var(--grey);
   border-radius: 1rem;
   padding: 1rem;
@@ -308,7 +308,14 @@ form {
   color: var(--red);
 }
 
-#cancel-button {
+.project-form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+#cancel-task-button,
+#cancel-project-button {
   background-color: white;
   border: 1px solid var(--black);
   border-radius: 8px;
@@ -331,25 +338,21 @@ form {
   width: auto;
 }
 
-#cancel-button:focus-visible {
+#cancel-task-button:focus-visible,
+#confirm-project-button:focus-visible {
   box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.3) 0 0 0 4px;
   transition: box-shadow 0.2s;
 }
 
-#cancel-button:active {
+#cancel-task-button:active,
+#cancel-project-button:active {
   background-color: #f7f7f7;
   border-color: #000000;
   transform: scale(0.96);
 }
 
-#cancel-button:disabled {
-  border-color: #dddddd;
-  color: #dddddd;
-  cursor: not-allowed;
-  opacity: 1;
-}
-
-#confirm-button {
+#confirm-task-button,
+#confirm-project-button {
   background-color: var(--blue);
   border: 1px solid var(--blue);
   border-radius: 8px;
@@ -372,22 +375,17 @@ form {
   width: auto;
 }
 
-#confirm-button:focus-visible {
+#confirm-task-button:focus-visible,
+#confirm-project-button:focus-visible {
   box-shadow: #222222 0 0 0 2px, rgba(255, 255, 255, 0.8) 0 0 0 4px;
   transition: box-shadow 0.2s;
 }
 
-#confirm-button:active {
+#confirm-task-button:active,
+#confirm-project-button:active {
   background-color: var(--blue);
   border-color: var(--dark-blue);
   transform: scale(0.96);
-}
-
-#confirm-button:disabled {
-  border-color: #dddddd;
-  color: #dddddd;
-  cursor: not-allowed;
-  opacity: 1;
 }
 
 input[type='radio'] {
@@ -462,11 +460,23 @@ input[type='checkbox'] {
     height: 20px;
     padding: 0.25rem;
   }
+
   .footer-text {
     font-size: 1rem;
   }
 
   .form-buttons {
     gap: 5px;
+  }
+
+  .task-date,
+  .date-input {
+    font-size: 0.8rem;
+  }
+
+  .radio-buttons,
+  .form-buttons,
+  .task-date {
+    flex-direction: column;
   }
 }

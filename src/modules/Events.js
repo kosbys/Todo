@@ -39,12 +39,17 @@ function Events() {
   (function addProjectEvent() {
     const addButton = document.getElementById('add-project-button');
     addButton.addEventListener('click', () => {
-      userInterface.toggleDisplay('add-project-input', 'block');
+      userInterface.toggleDisplay('form-input-container', 'block');
+      userInterface.toggleDisplay('add-project-button', 'flex');
     });
   })();
 
+  (function sendProjectEvent() {})();
+
+  (function cancelProjectEvent() {})();
+
   (function sendTaskEvent() {
-    const confirmButton = document.getElementById('confirm-button');
+    const confirmButton = document.getElementById('confirm-task-button');
 
     confirmButton.addEventListener('click', () => {
       userInterface.formToTask();
@@ -52,7 +57,7 @@ function Events() {
   })();
 
   (function cancelTaskEvent() {
-    const cancelButton = document.getElementById('cancel-button');
+    const cancelButton = document.getElementById('cancel-task-button');
 
     cancelButton.addEventListener('click', () => {
       userInterface.toggleDisplay('task-input-container', 'block');

@@ -4,7 +4,6 @@ import Project from './Project';
 import Task from './Task';
 import Todo from './Todo';
 import Add from '../images/add.svg';
-import { add } from 'date-fns';
 
 const TodoList = new Todo();
 const main = new Project('main');
@@ -217,10 +216,10 @@ const userInterface = (() => {
 
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'CANCEL';
-    cancelButton.id = 'cancel-button';
+    cancelButton.id = 'cancel-task-button';
     cancelButton.type = 'button';
     const confirmButton = document.createElement('button');
-    confirmButton.id = 'confirm-button';
+    confirmButton.id = 'confirm-task-button';
     confirmButton.type = 'button';
     confirmButton.textContent = 'ADD';
     confirmButton.type = 'button';
@@ -297,29 +296,54 @@ const userInterface = (() => {
     inputContainer.style.display = 'none';
   }
 
-  function createProjectForm() {
-    const sidebar = document.getElementsByClassName('sidebar')[0];
-
-    const inputDiv = document.createElement('div');
-    inputDiv.classList.add('project');
-    inputDiv.id = 'add-project-input';
-
+  function projectFormText() {
     const input = document.createElement('input');
     input.classList.add('text-input', 'add-project-container');
 
-    inputDiv.appendChild(input);
-
-    sidebar.insertBefore(inputDiv, document.getElementById('add-project-container'));
-
-    inputDiv.style.display = 'none';
+    return input;
   }
 
-  function createPage() {
-    createHeader();
-    createContent();
-    createFooter();
-    createTaskForm();
-    createProjectForm();
+  function projectFormButtons() {
+    const buttons = document.createElement('div');
+    buttons.classList.add('form-buttons');
+    buttons.style.display = 'flex';
+
+    const confirmButton = document.createElement('button');
+    confirmButton.textContent = 'ADD';
+    confirmButton.type = 'button';
+    confirmButton.id = 'confirm-project-button';
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'CANCEL';
+    cancelButton.type = 'button';
+    cancelButton.id = 'cancel-project-button';
+
+    buttons.append(cancelButton, confirmButton);
+
+    return buttons;
+  }
+
+  function createProjectForm() {
+    const sidebar = document.getElementsByClassName('sidebar')[0];
+
+    const form = document.createElement('form');
+    form.classList.add('project-form');
+
+    const formDiv = document.createElement('div');
+    formDiv.classList.add('project');
+    formDiv.id = 'form-input-container';
+
+    const input = projectFormText();
+
+    const buttonDiv = projectFormButtons();
+
+    form.append(input, buttonDiv);
+
+    formDiv.appendChild(form);
+
+    sidebar.insertBefore(formDiv, document.getElementById('add-project-container'));
+
+    formDiv.style.display = 'none';
   }
 
   function toggleDisplay(id, type) {
@@ -332,6 +356,7 @@ const userInterface = (() => {
   }
 
   function formError(msg) {
+    // make function usable on both forms
     const container = document.getElementsByClassName('task-form')[0];
     if (container.lastChild.classList.contains('required-fields-notice')) {
       container.lastChild.textContent = msg;
@@ -398,9 +423,17 @@ const userInterface = (() => {
     toggleDisplay('task-input-container');
 
     const taskButton = document.getElementById('add-task-button');
-
     taskButton.style.display = 'flex';
+
     form.reset();
+  }
+
+  function createPage() {
+    createHeader();
+    createContent();
+    createFooter();
+    createTaskForm();
+    createProjectForm();
   }
 
   return {
@@ -413,3 +446,5 @@ const userInterface = (() => {
 })();
 
 export default userInterface;
+
+// TODO : checkbox functionality
