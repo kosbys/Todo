@@ -1,9 +1,10 @@
 import parseISO from 'date-fns/parseISO';
-import format from 'date-fns';
+import format from 'date-fns/format';
 import Project from './Project';
 import Task from './Task';
 import Todo from './Todo';
 import Add from '../images/add.svg';
+import { add } from 'date-fns';
 
 const TodoList = new Todo();
 const main = new Project('main');
@@ -99,7 +100,7 @@ const userInterface = (() => {
 
       const dueDate = document.createElement('div');
       dueDate.classList.add('task-date-display');
-      dueDate.textContent = `Due date: ${task.dueDate}`;
+      dueDate.innerHTML = `Due date: <strong>${task.dueDate}</strong>`;
 
       const taskDescription = document.createElement('p');
       taskDescription.classList.add('task-description');
@@ -187,12 +188,6 @@ const userInterface = (() => {
     document.body.appendChild(footer);
   }
 
-  function createPage() {
-    createHeader();
-    createContent();
-    createFooter();
-  }
-
   function taskFormText() {
     const textInput = document.createElement('input');
     textInput.type = 'text';
@@ -216,14 +211,41 @@ const userInterface = (() => {
     return textArea;
   }
 
-  function toggleAddTaskDisplay() {
-    const button = document.getElementById('add-task-container');
+  function taskFormButtons() {
+    const buttonDiv = document.createElement('div');
+    buttonDiv.classList.add('form-buttons');
 
-    if (button.style.display !== 'none') {
-      button.style.display = 'none';
-    } else {
-      button.style.display = 'block';
-    }
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'CANCEL';
+    cancelButton.id = 'cancel-button';
+    cancelButton.type = 'button';
+    const confirmButton = document.createElement('button');
+    confirmButton.id = 'confirm-button';
+    confirmButton.type = 'button';
+    confirmButton.textContent = 'ADD';
+    confirmButton.type = 'button';
+
+    buttonDiv.append(cancelButton, confirmButton);
+
+    return buttonDiv;
+  }
+
+  function taskFormDate() {
+    const dateDiv = document.createElement('div');
+    dateDiv.classList.add('task-date');
+
+    const date = document.createElement('input');
+    date.type = 'date';
+    date.name = 'date';
+    date.classList.add('date-input');
+
+    const label = document.createElement('label');
+    label.htmlFor = 'date';
+    label.textContent = 'Due:';
+
+    dateDiv.append(label, date);
+
+    return dateDiv;
   }
 
   function taskFormRadio() {
@@ -250,22 +272,91 @@ const userInterface = (() => {
     return radioDiv;
   }
 
-  function validateForm(data) {
-    function requiredFieldsNotice() {
-      const container = document.getElementsByClassName('task-form')[0];
-      if (container.lastChild.classList.contains('required-fields-notice')) {
-        return;
-      }
-      const notice = document.createElement('div');
-      notice.classList.add('required-fields-notice');
+  function createTaskForm() {
+    const articleContainer = document.getElementsByClassName('article-container')[0];
 
-      notice.textContent = 'One or more required fields are missing,';
+    const form = document.createElement('form');
+    form.classList.add('task-form');
 
-      container.appendChild(notice);
+    const inputContainer = document.createElement('div');
+    inputContainer.classList.add('task-input-container');
+    inputContainer.id = 'task-input-container';
+
+    const textInput = taskFormText();
+    const textArea = taskFormTextArea();
+    const dateInput = taskFormDate();
+    const radioButtons = taskFormRadio();
+    const buttonDiv = taskFormButtons();
+
+    form.append(textInput, textArea, dateInput, radioButtons, buttonDiv);
+
+    inputContainer.appendChild(form);
+
+    articleContainer.appendChild(inputContainer);
+
+    inputContainer.style.display = 'none';
+  }
+
+  function createProjectForm() {
+    const sidebar = document.getElementsByClassName('sidebar')[0];
+
+    const inputDiv = document.createElement('div');
+    inputDiv.classList.add('project');
+    inputDiv.id = 'add-project-input';
+
+    const input = document.createElement('input');
+    input.classList.add('text-input', 'add-project-container');
+
+    inputDiv.appendChild(input);
+
+    sidebar.insertBefore(inputDiv, document.getElementById('add-project-container'));
+
+    inputDiv.style.display = 'none';
+  }
+
+  function createPage() {
+    createHeader();
+    createContent();
+    createFooter();
+    createTaskForm();
+    createProjectForm();
+  }
+
+  function toggleDisplay(id, type) {
+    const div = document.getElementById(id);
+    if (div.style.display === 'none') {
+      div.style.display = type;
+    } else {
+      div.style.display = 'none';
     }
+  }
 
+  function formError(msg) {
+    const container = document.getElementsByClassName('task-form')[0];
+    if (container.lastChild.classList.contains('required-fields-notice')) {
+      container.lastChild.textContent = msg;
+      return;
+    }
+    const notice = document.createElement('div');
+    notice.classList.add('required-fields-notice');
+
+    notice.textContent = msg;
+
+    container.appendChild(notice);
+  }
+
+  function validateTask(task) {
+    const taskAdd = currentProject.addTask(task);
+    if (!taskAdd) {
+      formError('Two tasks cannot have the same title');
+      return false;
+    }
+    return true;
+  }
+
+  function validateForm(data) {
     if (data.name === '' || data.data === '' || data.priority === '') {
-      requiredFieldsNotice();
+      formError('One or more required fields are missing');
       return false;
     }
     return true;
@@ -273,8 +364,8 @@ const userInterface = (() => {
 
   function formToTask() {
     const article = document.getElementsByClassName('article-container')[0];
-    const formData = new FormData(document.getElementsByClassName('task-form')[0]);
     const form = document.getElementsByClassName('task-form')[0];
+    const formData = new FormData(form);
     const data = { priority: '' };
 
     [...formData].forEach((element) => {
@@ -289,102 +380,35 @@ const userInterface = (() => {
     data.date = parseISO(data.date);
     data.date = format(data.date, 'yyyy-MM-dd');
 
-    form.remove();
-
-    toggleAddTaskDisplay();
-
     const task = new Task(data.name, data.description, data.date, data.priority);
 
-    currentProject.addTask(task);
+    if (!validateTask(task)) {
+      return;
+    }
 
     const newTasks = createTaskList(currentProject);
 
-    const oldTasks = document.getElementsByClassName('task-container')[0];
-    oldTasks.remove();
-
-    article.insertBefore(newTasks, document.getElementById('add-task-container'));
-  }
-
-  function taskFormButtons() {
-    const buttonDiv = document.createElement('div');
-    buttonDiv.classList.add('form-buttons');
-
-    const cancelButton = document.createElement('button');
-    cancelButton.textContent = 'CANCEL';
-    cancelButton.id = 'cancel-button';
-    cancelButton.type = 'button';
-    const confirmButton = document.createElement('button');
-    confirmButton.id = 'confirm-button';
-    confirmButton.type = 'button';
-    confirmButton.textContent = 'ADD';
-    confirmButton.type = 'button';
-
-    confirmButton.addEventListener('click', formToTask);
-
-    cancelButton.addEventListener('click', () => {
-      document.getElementsByClassName('task-form')[0].remove();
-      toggleAddTaskDisplay();
+    const oldTasks = document.getElementsByClassName('task');
+    [...oldTasks].forEach((oldTask) => {
+      oldTask.remove();
     });
 
-    buttonDiv.append(cancelButton, confirmButton);
+    article.insertBefore(newTasks, document.getElementById('add-task-container'));
 
-    return buttonDiv;
+    toggleDisplay('task-input-container');
+
+    const taskButton = document.getElementById('add-task-button');
+
+    taskButton.style.display = 'flex';
+    form.reset();
   }
-
-  function taskFormDate() {
-    const dateDiv = document.createElement('div');
-    dateDiv.classList.add('task-date');
-
-    const date = document.createElement('input');
-    date.type = 'date';
-    date.name = 'date';
-    date.classList.add('date-input');
-
-    const label = document.createElement('label');
-    label.htmlFor = 'date';
-    label.textContent = 'Due:';
-
-    dateDiv.append(label, date);
-
-    return dateDiv;
-  }
-
-  function createTaskForm() {
-    const taskContainer = document.getElementsByClassName('task-container')[0];
-
-    const form = document.createElement('form');
-    form.classList.add('task-form');
-
-    const inputContainer = document.createElement('div');
-    inputContainer.classList.add('task-input-container');
-
-    const textInput = taskFormText();
-
-    const textArea = taskFormTextArea();
-
-    const dateInput = taskFormDate();
-
-    const radioButtons = taskFormRadio();
-
-    const buttonDiv = taskFormButtons();
-
-    form.append(textInput, textArea, dateInput, radioButtons, buttonDiv);
-
-    inputContainer.appendChild(form);
-
-    taskContainer.appendChild(inputContainer);
-
-    toggleAddTaskDisplay();
-  }
-
-  function createProjectForm() {}
 
   return {
     createPage,
     getProjectsDiv,
     getTasksDiv,
-    createTaskForm,
-    createProjectForm,
+    toggleDisplay,
+    formToTask,
   };
 })();
 

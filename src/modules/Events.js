@@ -30,13 +30,35 @@ function Events() {
 
   (function addTaskEvent() {
     const addButton = document.getElementById('add-task-button');
-    addButton.addEventListener('click', userInterface.createTaskForm);
+    addButton.addEventListener('click', () => {
+      userInterface.toggleDisplay('task-input-container', 'block');
+      userInterface.toggleDisplay('add-task-button', 'flex');
+    });
   })();
 
-  function addProjectEvent() {
+  (function addProjectEvent() {
     const addButton = document.getElementById('add-project-button');
-    addButton.addEventListener('click', userInterface.createProjectForm);
-  }
+    addButton.addEventListener('click', () => {
+      userInterface.toggleDisplay('add-project-input', 'block');
+    });
+  })();
+
+  (function sendTaskEvent() {
+    const confirmButton = document.getElementById('confirm-button');
+
+    confirmButton.addEventListener('click', () => {
+      userInterface.formToTask();
+    });
+  })();
+
+  (function cancelTaskEvent() {
+    const cancelButton = document.getElementById('cancel-button');
+
+    cancelButton.addEventListener('click', () => {
+      userInterface.toggleDisplay('task-input-container', 'block');
+      userInterface.toggleDisplay('add-task-button', 'flex');
+    });
+  })();
 
   return {};
 }

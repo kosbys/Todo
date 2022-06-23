@@ -4,7 +4,13 @@ class Todo {
   }
 
   addProject(project) {
-    this.projects.push(project);
+    const duplicateCheck = this.projects.find((el) => el.name === project.name);
+
+    if (!duplicateCheck) {
+      this.projects.push(project);
+      return true;
+    }
+    return false;
   }
 
   deleteProject(project) {
@@ -19,5 +25,7 @@ class Todo {
     return false;
   }
 }
+
+// check if project is already inside the array
 
 export default Todo;
