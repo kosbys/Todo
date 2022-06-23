@@ -15,7 +15,7 @@ main.addTask(dummyTask2);
 TodoList.addProject(main);
 
 const userInterface = (() => {
-  const currentProject = main;
+  let currentProject = main;
 
   function createHeader() {
     const header = document.createElement('div');
@@ -58,7 +58,8 @@ const userInterface = (() => {
   }
 
   function getProjectsDiv(todo) {
-    const projects = [];
+    const projectsDiv = document.createElement('div');
+    projectsDiv.id = 'projects-container';
 
     todo.projects.forEach((project) => {
       const sidebarProject = document.createElement('div');
@@ -74,14 +75,16 @@ const userInterface = (() => {
 
       sidebarProject.append(projectTitle, projectLength);
 
-      projects.push(sidebarProject);
+      projectsDiv.appendChild(sidebarProject);
     });
 
-    return projects;
+    return projectsDiv;
   }
 
   function getTasksDiv(project) {
-    const tasks = [];
+    const taskList = document.createElement('div');
+    taskList.classList.add('task-container');
+
     project.tasks.forEach((task) => {
       const taskItem = document.createElement('div');
       taskItem.classList.add('task');
@@ -109,10 +112,10 @@ const userInterface = (() => {
 
       taskItem.append(checkbox, taskDetails);
 
-      tasks.push(taskItem);
+      taskList.appendChild(taskItem);
     });
 
-    return tasks;
+    return taskList;
   }
 
   function createSidebar() {
@@ -122,11 +125,8 @@ const userInterface = (() => {
     const buttonContainer = addButton('project');
 
     const projects = getProjectsDiv(TodoList);
-    projects.forEach((project) => {
-      sidebar.appendChild(project);
-    });
 
-    sidebar.appendChild(buttonContainer);
+    sidebar.append(projects, buttonContainer);
 
     return sidebar;
   }
@@ -137,11 +137,7 @@ const userInterface = (() => {
 
     const tasks = getTasksDiv(project);
 
-    tasks.forEach((task) => {
-      taskList.appendChild(task);
-    });
-
-    return taskList;
+    return tasks;
   }
 
   function createTaskContainer(project) {
@@ -192,6 +188,7 @@ const userInterface = (() => {
     textInput.type = 'text';
     textInput.classList.add('text-input');
     textInput.placeholder = 'Task';
+    textInput.id = 'task-name-input';
     textInput.name = 'name';
     textInput.minLength = 1;
     textInput.maxLength = 25;
@@ -271,6 +268,14 @@ const userInterface = (() => {
     return radioDiv;
   }
 
+  function formErrorDiv(type) {
+    const errorNotice = document.createElement('div');
+    errorNotice.id = `form-error-${type}`;
+    errorNotice.style.display = 'none';
+
+    return errorNotice;
+  }
+
   function createTaskForm() {
     const articleContainer = document.getElementsByClassName('article-container')[0];
 
@@ -286,8 +291,9 @@ const userInterface = (() => {
     const dateInput = taskFormDate();
     const radioButtons = taskFormRadio();
     const buttonDiv = taskFormButtons();
+    const errorDiv = formErrorDiv('task');
 
-    form.append(textInput, textArea, dateInput, radioButtons, buttonDiv);
+    form.append(textInput, textArea, dateInput, radioButtons, buttonDiv, errorDiv);
 
     inputContainer.appendChild(form);
 
@@ -298,7 +304,9 @@ const userInterface = (() => {
 
   function projectFormText() {
     const input = document.createElement('input');
-    input.classList.add('text-input', 'add-project-container');
+    input.id = 'project-name-input';
+    input.classList.add('text-input');
+    input.name = 'name';
 
     return input;
   }
@@ -330,14 +338,15 @@ const userInterface = (() => {
     form.classList.add('project-form');
 
     const formDiv = document.createElement('div');
-    formDiv.classList.add('project');
-    formDiv.id = 'form-input-container';
+    formDiv.id = 'project-input-container';
 
     const input = projectFormText();
 
     const buttonDiv = projectFormButtons();
 
-    form.append(input, buttonDiv);
+    const errorDiv = formErrorDiv('project');
+
+    form.append(input, buttonDiv, errorDiv);
 
     formDiv.appendChild(form);
 
@@ -355,50 +364,88 @@ const userInterface = (() => {
     }
   }
 
-  function formError(msg) {
-    // make function usable on both forms
-    const container = document.getElementsByClassName('task-form')[0];
-    if (container.lastChild.classList.contains('required-fields-notice')) {
-      container.lastChild.textContent = msg;
-      return;
-    }
-    const notice = document.createElement('div');
-    notice.classList.add('required-fields-notice');
-
-    notice.textContent = msg;
-
-    container.appendChild(notice);
+  function formError(msg, form) {
+    const container = form;
+    container.lastChild.textContent = msg;
+    container.lastChild.style.display = 'block';
   }
 
-  function validateTask(task) {
+  function validateTask(task, form) {
     const taskAdd = currentProject.addTask(task);
     if (!taskAdd) {
-      formError('Two tasks cannot have the same title');
+      formError('Two tasks cannot have the same title', form);
       return false;
     }
     return true;
   }
 
-  function validateForm(data) {
+  function validateForm(data, form) {
     if (data.name === '' || data.data === '' || data.priority === '') {
-      formError('One or more required fields are missing');
+      formError('One or more required fields are missing', form);
       return false;
     }
     return true;
+  }
+
+  function validateProject(project, form) {
+    if (project.name === '') {
+      formError('Project name cannot be empty', form);
+      return false;
+    }
+
+    const projectAdd = TodoList.addProject(project);
+    if (!projectAdd) {
+      formError('Two projects cannot have the same name', form);
+      return false;
+    }
+    return true;
+  }
+
+  function updateTasks(project) {
+    const article = document.getElementsByClassName('article-container')[0];
+
+    const newTasks = createTaskList(project);
+
+    const oldTasks = document.getElementsByClassName('task-container')[0];
+
+    oldTasks.remove();
+
+    article.insertBefore(newTasks, document.getElementById('add-task-container'));
+  }
+
+  function updateProjects(todo) {
+    const projects = document.getElementsByClassName('project');
+
+    for (let i = 0; i < projects.length; i += 1) {
+      const projectArr = todo.projects[i];
+      const project = projects[i];
+      const length = project.querySelector('.project-length');
+      length.textContent = projectArr.tasks.length;
+    }
+  }
+
+  function setCurrentProject(project) {
+    const projectHeader = document.getElementsByClassName('project-name')[0];
+
+    currentProject = TodoList.projects.find((el) => el.name === project);
+
+    projectHeader.textContent = currentProject.name;
+
+    updateTasks(currentProject);
   }
 
   function formToTask() {
-    const article = document.getElementsByClassName('article-container')[0];
     const form = document.getElementsByClassName('task-form')[0];
     const formData = new FormData(form);
     const data = { priority: '' };
+    const errorDiv = document.getElementById('form-error-task');
 
     [...formData].forEach((element) => {
       const [key, value] = element;
       Object.assign(data, { [key]: value });
     });
 
-    if (!validateForm(data)) {
+    if (!validateForm(data, form)) {
       return;
     }
 
@@ -407,25 +454,51 @@ const userInterface = (() => {
 
     const task = new Task(data.name, data.description, data.date, data.priority);
 
-    if (!validateTask(task)) {
+    if (!validateTask(task, form)) {
       return;
     }
 
-    const newTasks = createTaskList(currentProject);
+    updateTasks(currentProject);
 
-    const oldTasks = document.getElementsByClassName('task');
-    [...oldTasks].forEach((oldTask) => {
-      oldTask.remove();
-    });
+    updateProjects(TodoList);
 
-    article.insertBefore(newTasks, document.getElementById('add-task-container'));
+    toggleDisplay('task-input-container', 'block');
 
-    toggleDisplay('task-input-container');
-
-    const taskButton = document.getElementById('add-task-button');
-    taskButton.style.display = 'flex';
+    toggleDisplay('add-task-button', 'flex');
 
     form.reset();
+    errorDiv.style.display = 'none';
+  }
+
+  function formtoProject() {
+    const sidebar = document.getElementsByClassName('sidebar')[0];
+    const projectHeader = document.getElementsByClassName('project-name')[0];
+    const projectContainer = document.getElementById('projects-container');
+    const form = document.getElementsByClassName('project-form')[0];
+    const formData = new FormData(form);
+    const project = new Project(formData.get('name'));
+
+    if (!validateProject(project, form)) {
+      return;
+    }
+
+    const newProjects = getProjectsDiv(TodoList);
+
+    projectContainer.remove();
+
+    toggleDisplay('project-input-container', 'block');
+
+    toggleDisplay('add-project-button', 'flex');
+
+    sidebar.insertBefore(newProjects, document.getElementById('project-input-container'));
+
+    form.reset();
+
+    currentProject = project;
+
+    updateTasks(currentProject);
+
+    projectHeader.textContent = currentProject.name;
   }
 
   function createPage() {
@@ -438,10 +511,10 @@ const userInterface = (() => {
 
   return {
     createPage,
-    getProjectsDiv,
-    getTasksDiv,
     toggleDisplay,
     formToTask,
+    formtoProject,
+    setCurrentProject,
   };
 })();
 
