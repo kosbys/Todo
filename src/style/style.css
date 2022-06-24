@@ -137,7 +137,6 @@ body {
 }
 
 .task {
-  display: flex;
   font-family: 'Roboto';
   padding-top: 1rem;
   display: flex;
