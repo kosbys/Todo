@@ -146,11 +146,6 @@ body {
   box-shadow: rgba(17, 17, 26, 0.1) 0px 1px 0px;
 }
 
-.task-details {
-  display: flex;
-  flex-direction: column;
-}
-
 .task-title {
   font-size: calc(1rem + 0.5vw);
   margin: 0;
